@@ -1,4 +1,3 @@
-import { Component } from 'react';
 import { ImageGallery } from '../ImageGallery/ImageGallery';
 import { SearchBar } from '../SearchBar/SearchBar';
 import { getImagesAPI } from 'services/getImagesAPI';
@@ -6,81 +5,60 @@ import { Button } from '../Button/Button';
 import { Loader } from '../Loader/Loader';
 
 import styles from './App.module.css';
+import { useState } from 'react';
 
-class App extends Component {
-  state = {
-    query: '',
-    images: [],
-    page: 1,
-    isMore: false,
-    isLoading: false,
-  };
+function App() {
+  const [query, setQuery] = useState('');
+  const [images, setImages] = useState([]);
+  const [page, setPage] = useState(1);
+  const [isMore, setIsMore] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  handleSubmit = async e => {
+  const handleSubmit = async e => {
     e.preventDefault();
 
-    this.setState({ isLoading: true });
+    setIsLoading(true);
 
     const query = e.target.elements.query.value;
 
     try {
-      const images = await getImagesAPI(query, 1);
+      const newImages = await getImagesAPI(query, 1);
 
-      if (images.length <= 0) this.setState({ isMore: false });
-      else this.setState({ isMore: true });
+      if (newImages.length <= 0) setIsMore(false);
+      else setIsMore(true);
 
-      this.setState({ images });
-
-      console.log(images, this.state);
+      setImages(newImages);
     } catch (error) {
       console.log(error);
     } finally {
-      this.setState({ isLoading: false });
+      setIsLoading(false);
     }
   };
 
-  handleChange = e => {
-    this.setState({ query: e.target.value });
+  const handleChange = e => {
+    setQuery(e.target.value.trim());
   };
 
-  handleClick = async e => {
-    const { query, page } = this.state;
-
+  const handleClick = async e => {
     const newImages = await getImagesAPI(query, page + 1);
 
-    this.setState(state => ({
-      images: [...state.images, ...newImages],
-      page: state.page + 1,
-    }));
+    setImages(prevImages => [...prevImages, ...newImages]);
+    setPage(prevPage => prevPage + 1);
   };
 
-  render() {
-    const { query, images, isLoading, isMore } = this.state;
+  return (
+    <div className={styles.app}>
+      <SearchBar
+        query={query}
+        handleChange={handleChange}
+        handleSubmit={handleSubmit}
+      />
 
-    if (isLoading) {
-      return (
-        <div>
-          <Loader />
-        </div>
-      );
-    }
+      {isLoading ? <Loader /> : <ImageGallery images={images} />}
 
-    return (
-      <div className={styles.app}>
-        <SearchBar
-          query={query}
-          handleChange={this.handleChange}
-          handleSubmit={this.handleSubmit}
-        />
-
-        <ImageGallery images={images} isLoading={isLoading} />
-
-        {isMore ? (
-          <Button handleClick={this.handleClick} text="Load more..." />
-        ) : null}
-      </div>
-    );
-  }
+      {isMore && <Button handleClick={handleClick} text="Load more..." />}
+    </div>
+  );
 }
 
 export default App;
