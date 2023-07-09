@@ -4,3 +4,9 @@
   grid-gap: 16px;
   padding-bottom: 24px;
 }
+
+.box_center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

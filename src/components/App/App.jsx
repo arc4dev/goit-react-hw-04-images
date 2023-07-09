@@ -54,7 +54,13 @@ function App() {
         handleSubmit={handleSubmit}
       />
 
-      {isLoading ? <Loader /> : <ImageGallery images={images} />}
+      {isLoading ? (
+        <div className={styles.box_center}>
+          <Loader />
+        </div>
+      ) : (
+        <ImageGallery images={images} />
+      )}
 
       {isMore && <Button handleClick={handleClick} text="Load more..." />}
     </div>
