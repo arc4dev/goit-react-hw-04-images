@@ -8,6 +8,7 @@ function Modal({ largeImage, alt, handleClick }) {
     return () => {
       window.removeEventListener('keydown', closeModal);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const closeModal = e => {
