@@ -1,9 +1,11 @@
 import { Component } from 'react';
-import { ImageGallery } from './ImageGallery/ImageGallery';
-import { SearchBar } from './SearchBar/SearchBar';
+import { ImageGallery } from '../ImageGallery/ImageGallery';
+import { SearchBar } from '../SearchBar/SearchBar';
 import { getImagesAPI } from 'services/getImagesAPI';
-import { Button } from './Button/Button';
-import { Loader } from './Loader/Loader';
+import { Button } from '../Button/Button';
+import { Loader } from '../Loader/Loader';
+
+import styles from './App.module.css';
 
 class App extends Component {
   state = {
@@ -64,7 +66,7 @@ class App extends Component {
     }
 
     return (
-      <div className="App">
+      <div className={styles.app}>
         <SearchBar
           query={query}
           handleChange={this.handleChange}
